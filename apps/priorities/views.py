@@ -12,7 +12,7 @@ class PriorityListAPIView(generics.ListAPIView):
 
 class PriorityRetrieveAPIView(generics.RetrieveAPIView):
     """
-    Retrieve a priority using PUT method
+    Retrieve a priority using GET method
     """
     serializer_class = PrioritySerializer
     queryset = Priority.objects.all()

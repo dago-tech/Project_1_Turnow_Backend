@@ -19,7 +19,7 @@ class CategoryCreateAPIView(generics.CreateAPIView):
 
 class CategoryRetrieveAPIView(generics.RetrieveAPIView):
     """
-    Retrieve a category using PUT method
+    Retrieve a category using GET method
     """
     serializer_class = CategorySerializer
     queryset = Category.objects.all()

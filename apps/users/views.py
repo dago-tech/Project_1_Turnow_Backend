@@ -13,14 +13,37 @@ class UserListAPIView(generics.ListAPIView):
     queryset = CustomUser.objects.all()
 
 
-class CustomUserCreate(APIView):
-    #permission_classes = [AllowAny]
+class UserCreateAPIView(generics.CreateAPIView):
+    
+    serializer_class = CustomUserSerializer
 
     def post(self, request, format='json'):
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
-            if user:
-                json = serializer.data
-                return Response(json, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status= status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserRetrieveAPIView(generics.RetrieveAPIView):
+    """
+    Retrieve a user using GET method
+    """
+    serializer_class = CustomUserSerializer
+    queryset = CustomUser.objects.all()
+
+
+class UserRetrieveAPIView(generics.UpdateAPIView):
+    """
+    Update a user using PUT method
+    """
+    serializer_class = CustomUserSerializer
+    queryset = CustomUser.objects.all()
+
+
+class UserRetrieveAPIView(generics.DestroyAPIView):
+    """
+    Delete a user using DELETE method
+    """
+    serializer_class = CustomUserSerializer
+    queryset = CustomUser.objects.all()

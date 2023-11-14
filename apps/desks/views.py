@@ -11,7 +11,7 @@ class DeskListAPIView(generics.ListAPIView):
 
 class DeskRetrieveAPIView(generics.RetrieveAPIView):
     """
-    Retrieve a Desk using PUT method
+    Retrieve a Desk using GET method
     """
     serializer_class = DeskSerializer
     queryset = Desk.objects.all()
@@ -33,6 +33,11 @@ class DeskUpdateAPIView(generics.UpdateAPIView):
     queryset = Desk.objects.all()
 
 
+class ServingAPIView(generics.UpdateAPIView):
+    serializer_class = DeskSerializer
+    queryset = Desk.objects.all()
+
+
 class DeskDeleteAPIView(generics.DestroyAPIView):
     """
     Delete a Desk using DELETE method
@@ -41,7 +46,5 @@ class DeskDeleteAPIView(generics.DestroyAPIView):
     queryset = Desk.objects.all()
 
 
-class ServingAPIView(generics.UpdateAPIView):
-    serializer_class = DeskSerializer
-    queryset = Desk.objects.all()
+
 

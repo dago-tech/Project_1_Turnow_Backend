@@ -19,7 +19,7 @@ class Turn(models.Model):
     personal_id = models.ForeignKey(Client, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     priority = models.ForeignKey(Priority, on_delete=models.PROTECT)
-    desk = models.ForeignKey(Desk, on_delete=models.PROTECT)
+    desk = models.ForeignKey(Desk, on_delete=models.PROTECT, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)

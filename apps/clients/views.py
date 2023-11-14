@@ -12,7 +12,7 @@ class ClientListAPIView(generics.ListAPIView):
 
 class ClientRetrieveAPIView(generics.RetrieveAPIView):
     """
-    Retrieve a client using PUT method
+    Retrieve a client using GET method
     """
     serializer_class = ClientSerializer
     queryset = Client.objects.all()

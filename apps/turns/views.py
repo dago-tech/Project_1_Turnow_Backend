@@ -1,10 +1,11 @@
 from datetime import datetime
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from rest_framework.views import APIView
-from .serializers import *
 from rest_framework.response import Response
-from rest_framework import status 
+from rest_framework import status
+from .serializers import *
+from apps.desks.models import Desk
 
 
 class TurnListAPIView(generics.ListAPIView):
@@ -17,7 +18,7 @@ class TurnListAPIView(generics.ListAPIView):
 
 class TurnRetrieveAPIView(generics.RetrieveAPIView):
     """
-    Retrieve a turn using PUT method
+    Retrieve a turn using GET method
     """
     serializer_class = TurnSerializer
     queryset = Turn.objects.all()
@@ -70,73 +71,117 @@ class TurnCreateAPIView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class start_timeAPIView(APIView):    
+class First_to_serveAPIView(generics.UpdateAPIView):
     """
-    Update start_time field with current date, this HTTP request 
-    do not require a body message. Uses PUT method
+    When a service desk call for a new turn this function finds the first turn to serve 
+    based on category, priority and creation time, also updates Turn.state and 
+    Turn.desk attributes. This HTTP request do not requiere a body message   
     """
-    
-    def put(self, request, pk):
-        try:
-            queryset = Turn.objects.get(pk=pk)
-        except Turn.DoesNotExist:
-            return Response({'detail': 'This object do not exist.'}, status=status.HTTP_404_NOT_FOUND)
-
-        queryset.start_time = timezone.localtime(timezone.now()).time()
-        queryset.save()
-
-        return Response({'message': 'Date and time updated successfully'}, status=status.HTTP_200_OK)
-    
-
-class end_timeAPIView(APIView):    
-    """
-    Update end_time and duration fields with current date, this HTTP request do 
-    not require a body message. Uses PUT method
-    """
-    
-    def put(self, request, pk):
-        try:
-            queryset = Turn.objects.get(pk=pk)
-        except Turn.DoesNotExist:
-            return Response({'detail': 'This object do not exist.'}, status=status.HTTP_404_NOT_FOUND)
-        if queryset.start_time:
-            queryset.end_time = timezone.localtime(timezone.now()).time()
-            aux_start_time = datetime.strptime(str(queryset.start_time), '%H:%M:%S.%f')
-            aux_end_time = datetime.strptime(str(queryset.end_time), '%H:%M:%S.%f')
-            difference = aux_end_time - aux_start_time
-            print(difference)
-            queryset.duration = (difference.seconds // 60)
-            queryset.save()
-        else:
-            return Response({'detail': 'start_time do not exist in this turn.'}, status=status.HTTP_404_NOT_FOUND)
-
-        return Response({'message': 'Date and time updated successfully'}, status=status.HTTP_200_OK)
-    
-
-class First_to_serveView(generics.UpdateAPIView):
-    """
-    Find the first turn to serve based on priority and creation time
-    Update its state attribute
-    """
-    queryset = Turn.objects.all()
     serializer_class = TurnSerializer
 
     def get_highest_priority_turn(self):
-        turn = Turn.objects.filter(state='pending').order_by('-priority', '-created').first()
-        return turn
+        """
+        Based on the desk_id sent in URL, it gets its categories and compares to pending
+        turns. Gets the first turn to be served ordered by priority and creation time.
+        Returns said turn and corresponding desk instance.
+        """
+
+        """At the same time Desk.busy=True in desks.views.py"""
+
+        # Get the desk_id of desk that is calling for a new turn
+        desk_id = self.kwargs['desk_id']
+        # Get the register of this desk_id
+        current_desk = get_object_or_404(Desk, pk=desk_id)
+
+        # Get categories related to this desk
+        desk_categories_list = list(current_desk.category.all())
+
+        categories = []
+        # Save in a list the categories related to this desk
+        for category in desk_categories_list:
+            categories.append(category.id)
+
+        # Get the first turn to be served
+        turn = Turn.objects.filter(state='pending', category__in=categories).order_by('-priority', 'created').first()
+
+
+        return turn, current_desk
 
     def update(self, request, *args, **kwargs):
-        turn = self.get_highest_priority_turn()
+        """Updates desk and state fields of the first turn to be served """
+        
+        turn, desk_id = self.get_highest_priority_turn()
 
         if turn:
+            turn.desk = desk_id
             turn.state = 'first to serve'
             turn.save()
-
-            serializer = TurnSerializer(turn)
+            # It is no necessary to validate the serializer because a body message is not received
+            serializer = self.serializer_class(turn)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({'message': 'There are no pending turns to serve'}, status=status.HTTP_204_NO_CONTENT)
-        
+
+
+class ServingTurnAPIView(generics.UpdateAPIView):
+    """
+    When a person comes to the service desk, he will tell the user his turn number and the user
+    should enter it to the system, it will be compared to the same turn number that was called 
+    by this desk. If they are equal turn.state will update to served and start_time will be 
+    set to now. At that time the user must assist the client. 
+    A body message should be sent with the turn_number in the HTTP request
+    """
+
+    serializer_class = TurnSerializer
+
+    def update(self, request, *args, **kwargs):
+        """Updates state field of the first turn to be served """
+
+        turn_number_in_desk = request.data['turn_number']
+
+        desk_id = self.kwargs['desk_id']        
+        turn = Turn.objects.filter(state='first to serve', desk=desk_id).first()
+
+        if turn.turn_number == turn_number_in_desk:
+            turn.start_time = timezone.localtime(timezone.now()).time()
+            turn.state = 'serving'
+            turn.save()
+
+            serializer = self.serializer_class(turn)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'There are no turns assigned to this desk'}, status=status.HTTP_204_NO_CONTENT)
+
+
+class ServedTurnAPIView(generics.UpdateAPIView):
+    """
+    When user finishes serving the customer, turn.end_time, turn.duration and turn.state
+    will be updated.
+    A body message is not required in the HTTP request.
+    """
+    """At the same time Desk.busy=False in desks.views.py"""
+
+    serializer_class = TurnSerializer
+
+    def update(self, request, *args, **kwargs):
+        """Updates state field of the first turn to be served """
+
+        desk_id = self.kwargs['desk_id']        
+        turn = Turn.objects.filter(state='serving', desk=desk_id).first()
+
+        if turn:
+            turn.end_time = timezone.localtime(timezone.now()).time()
+            aux_start_time = datetime.strptime(str(turn.start_time), '%H:%M:%S.%f')
+            aux_end_time = datetime.strptime(str(turn.end_time), '%H:%M:%S.%f')
+            difference = aux_end_time - aux_start_time
+            turn.duration = (difference.seconds // 60)
+            turn.state = 'served'
+            turn.save()
+
+            serializer = self.serializer_class(turn)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'There are no turns assigned to this desk'}, status=status.HTTP_204_NO_CONTENT)
 
 
 class TurnUpdateAPIView(generics.UpdateAPIView):
@@ -154,26 +199,6 @@ class TurnDeleteAPIView(generics.DestroyAPIView):
     serializer_class = TurnSerializer
     queryset = Turn.objects.all()
 
-
-
-
-""" Concrete View Classes
-#CreateAPIView
-Used for create-only endpoints.
-#ListAPIView
-Used for read-only endpoints to represent a collection of model instances.
-#RetrieveAPIView
-Used for read-only endpoints to represent a single model instance.
-#DestroyAPIView
-Used for delete-only endpoints for a single model instance.
-#UpdateAPIView
-Used for update-only endpoints for a single model instance.
-##ListCreateAPIView
-Used for read-write endpoints to represent a collection of model instances.
-RetrieveUpdateAPIView
-Used for read or update endpoints to represent a single model instance.
-#RetrieveDestroyAPIView
-Used for read or delete endpoints to represent a single model instance.
-#RetrieveUpdateDestroyAPIView
-Used for read-write-delete endpoints to represent a single model instance.
+"""
+In a Desk, when State=True, application will let users to serve clients
 """

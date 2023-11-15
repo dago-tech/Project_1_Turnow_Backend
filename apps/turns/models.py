@@ -24,6 +24,7 @@ class Turn(models.Model):
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
     duration = models.IntegerField(null=True, blank=True)
+    waiting_time = models.IntegerField(null=True, blank=True)
     state = models.CharField(choices=options, default='pending')
 
     def __str__(self):

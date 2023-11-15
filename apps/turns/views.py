@@ -128,7 +128,7 @@ class ServingTurnAPIView(generics.UpdateAPIView):
     When a person comes to the service desk, he will tell the user his turn number and the user
     should enter it to the system, it will be compared to the same turn number that was called 
     by this desk. If they are equal turn.state will update to served and start_time will be 
-    set to now. At that time the user must assist the client. 
+    set to now and waiting_time will be calculated. At that time the user must assist the client. 
     A body message should be sent with the turn_number in the HTTP request
     """
 
@@ -143,7 +143,13 @@ class ServingTurnAPIView(generics.UpdateAPIView):
         turn = Turn.objects.filter(state='first to serve', desk=desk_id).first()
 
         if turn.turn_number == turn_number_in_desk:
+            # Adjust times to project localtime and calculate the waiting_time
             turn.start_time = timezone.localtime(timezone.now()).time()
+            created_time = timezone.localtime(turn.created).time()
+            turn.waiting_time = (
+                (turn.start_time.hour - created_time.hour) * 60 +
+                (turn.start_time.minute - created_time.minute)
+            )
             turn.state = 'serving'
             turn.save()
 
@@ -170,6 +176,7 @@ class ServedTurnAPIView(generics.UpdateAPIView):
         turn = Turn.objects.filter(state='serving', desk=desk_id).first()
 
         if turn:
+            # Adjust times to project localtime, set turn.end_time and calculate turn.duration
             turn.end_time = timezone.localtime(timezone.now()).time()
             aux_start_time = datetime.strptime(str(turn.start_time), '%H:%M:%S.%f')
             aux_end_time = datetime.strptime(str(turn.end_time), '%H:%M:%S.%f')

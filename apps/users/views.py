@@ -33,7 +33,7 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
 
 
-class UserRetrieveAPIView(generics.UpdateAPIView):
+class UserUpdateAPIView(generics.UpdateAPIView):
     """
     Update a user using PUT method
     """
@@ -41,7 +41,7 @@ class UserRetrieveAPIView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
 
 
-class UserRetrieveAPIView(generics.DestroyAPIView):
+class UserDeleteAPIView(generics.DestroyAPIView):
     """
     Delete a user using DELETE method
     """

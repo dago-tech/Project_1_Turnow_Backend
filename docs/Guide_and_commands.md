@@ -9,6 +9,15 @@ API built in Django Rest Framework to cover the backend of this project
 py -m venv venv
 source venv/Scripts/activate
 ```
+2. - Create requirements.txt
+```sh
+pip freeze > requirements.txt
+```
+- Install dependencies:
+```sh
+pip install -r requirements.txt
+```
+
 3. Install Django rest Framework:
 
 ```sh
@@ -44,14 +53,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'TurnowDB',
         'USER': 'postgres',
-        'PASSWORD': 'maquina123', # General postgresql password
+        'PASSWORD': '', # General postgresql password
         'HOST': '127.0.0.1',
         'DATABASE_PORT': '5432',
     }
 }
 ```
 
-![Alt text](img/PostgreSQLServerProps.JPG)
+![Alt text](../img/PostgreSQLServerProps.JPG)
 
 9. Make migrations:
 

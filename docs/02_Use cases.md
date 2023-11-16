@@ -24,14 +24,14 @@ There are two types of application users
 ***
 ## User => Use cases
 
-   * Administrator role:
-     
-     - Can create categories for the different types of services provided and clients.
-     - Can define the priority of clients (elderly, disability, etc., registered or unregistered clients)
-     - Can configure the different service desk and assign them the different service categories with their respective service priorities.
-     - Can add new attention modules
-    - Can see daily, weekly and/or monthly statistics of the number of turns attended, categories of turns, waiting times, service priorities, service time in module, among others. The statistics are not in real time and are generated daily once the workday has ended. (Future feature)
+__Administrator role__:
+  
+- Can create categories for the different types of services provided and clients.
+- Can define the priority of clients (elderly, disability, etc., registered or unregistered clients)
+- Can configure the different service desk and assign them the different service categories with their respective service priorities.
+- Can add new attention modules
+- Can see daily, weekly and/or monthly statistics of the number of turns attended, categories of turns, waiting times, service priorities, service time in module, among others. The statistics are not in real time and are generated daily once the workday has ended. (Future feature)
 
-   * Module role:
-     - The module user can see on a screen the current turn that must be attended in that service desk and mark it as attended once they have been attended.
-     - The module user can also reassign a turn to another service desk if necessary, for example if the service the user needs cannot be provided in that specific service desk.
+__Module role__:
+  - The module user can see on a screen the current turn that must be attended in that service desk and mark it as attended once they have been attended.
+  - The module user can also reassign a turn to another service desk if necessary, for example if the service the user needs cannot be provided in that specific service desk.

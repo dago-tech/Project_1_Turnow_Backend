@@ -1,6 +1,7 @@
 from .serializers import *
 from rest_framework import generics
 
+
 class DeskListAPIView(generics.ListAPIView):
     """
     List of Desks using GET method
@@ -29,11 +30,6 @@ class DeskUpdateAPIView(generics.UpdateAPIView):
     """
     Update a Desk using PUT method
     """
-    serializer_class = DeskSerializer
-    queryset = Desk.objects.all()
-
-
-class ServingAPIView(generics.UpdateAPIView):
     serializer_class = DeskSerializer
     queryset = Desk.objects.all()
 

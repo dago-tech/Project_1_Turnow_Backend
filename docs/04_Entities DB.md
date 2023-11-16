@@ -1,4 +1,4 @@
-# Diagrama entidad relación
+# Entity Relationship Diagram
 
 
 ![Alt text](../img/Cardinalidad_3.png)
@@ -27,13 +27,13 @@
 
 3. __"Priority" table__: Different turn priorities offered, such as "urgent", "preferential", "general".
 
-    | Field        | Type        | Description                          |
-    |--------------|-------------|--------------------------------------|
-    | id           | INT         | Unique and auto-generated register id|
-    | name         | VARCHAR     | Descriptive priority name            |
-    | priority     | INT         | Customer Service Priority Level      |
-    | description  | VARCHAR     | Detailed priority description        |
-    | ...          | ...         | ...                                  |
+    | Field        | Type        | Description                              |
+    |--------------|-------------|--------------------------------------    |
+    | id           | INT         | Unique and auto-generated register id    |
+    | name         | VARCHAR     | Descriptive priority name                |
+    | priority     | INT         | Customer Service Priority Level(0 to 20) |
+    | description  | VARCHAR     | Detailed priority description            |
+    | ...          | ...         | ...                                      |
 
 
 4. __"Category" table__: different categories of turns offered, such as "General", "Authorizations, Bill Payment".
@@ -70,10 +70,10 @@
     | priority(FK)    | INT     | Priority associated with the client (Priority table)  |
     | desk(FK)        | INT     | Service desk where the client is served               |
     | created         | DATETIME| Turn assignment date and time                         |
-    | start_time      | DATETIME| Client service start date and time                    |
-    | end_time        | DATETIME| Client service end date and time                      |
-    | duration        | DATETIME| Client service duration                               |
-    | waiting time    | DATETIME| Client waiting time to be served                      |
+    | start_time      | DATETIME| Client service start time                             |
+    | end_time        | DATETIME| Client service end time                               |
+    | duration        | DATETIME| Client service duration (minutes)                     |
+    | waiting time    | DATETIME| Client waiting time to be served (minutes)            |
     | state           | ENUM    | (e.g. "pending", "serving", "served", first to serve, |
     | ...             | ...     | "canceled")                                           |
 

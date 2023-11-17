@@ -2,7 +2,7 @@ from .serializers import *
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status
-from rest_framework.views import APIView
+from apps.users.permissions import IsAdminUser
 
 
 class UserListAPIView(generics.ListAPIView):
@@ -11,11 +11,13 @@ class UserListAPIView(generics.ListAPIView):
     """
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
+    permission_classes = [IsAdminUser]
 
 
 class UserCreateAPIView(generics.CreateAPIView):
     
     serializer_class = CustomUserSerializer
+    permission_classes = [IsAdminUser]
 
     def post(self, request, format='json'):
         serializer = CustomUserSerializer(data=request.data)
@@ -31,6 +33,7 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
     """
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
+    permission_classes = [IsAdminUser]
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
@@ -39,6 +42,7 @@ class UserUpdateAPIView(generics.UpdateAPIView):
     """
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
+    permission_classes = [IsAdminUser]
 
 
 class UserDeleteAPIView(generics.DestroyAPIView):
@@ -47,3 +51,4 @@ class UserDeleteAPIView(generics.DestroyAPIView):
     """
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
+    permission_classes = [IsAdminUser]

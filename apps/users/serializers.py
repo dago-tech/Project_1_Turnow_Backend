@@ -10,7 +10,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'user_name', 'password')
+        #fields = ('email', 'user_name', 'password')
+        #fields = '__all__'
+        exclude = ('groups','user_permissions')
         #extra_kwargs = {'password': {'write_only': True}}
 
     # Override create method to hash the password

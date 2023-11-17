@@ -1,5 +1,6 @@
 from .serializers import *
 from rest_framework import generics
+from apps.users.permissions import IsAdminUser
 
 
 class DeskListAPIView(generics.ListAPIView):
@@ -8,6 +9,7 @@ class DeskListAPIView(generics.ListAPIView):
     """
     serializer_class = DeskSerializer
     queryset = Desk.objects.all()
+    permission_classes = [IsAdminUser]
 
 
 class DeskRetrieveAPIView(generics.RetrieveAPIView):
@@ -40,7 +42,3 @@ class DeskDeleteAPIView(generics.DestroyAPIView):
     """
     serializer_class = DeskSerializer
     queryset = Desk.objects.all()
-
-
-
-

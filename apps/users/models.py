@@ -30,6 +30,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     user_name = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
+    is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -50,6 +51,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     "first_name": "cristiano",
     "last_name": "ronaldo",
     "is_active": "True",
-    "is_staff": "True"
+    "is_staff": "True",
+    "is_admin": "True"
 }
 """

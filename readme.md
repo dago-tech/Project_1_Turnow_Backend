@@ -1,13 +1,65 @@
 # Turnow Project
 
+
 __Python version__, __Django version__, __JWT__, __PostgreSQL__
 
 This is the backend section of Turnow Project. In docs folder you can find information about explanation, design and architecture.
 
 This API will allow you to interact with a generic turn management system, a person (client) approaches a computer, enters his personal id and other data about his necessity, receives a turn number, then he should wait for his turn to be shown in the notification screen, after that he will be able to be served in one the service desks by a person called 'user'.
 
-__Commands__:
+## Commands
 
+- Create and build the virtual environment in bash console:
+
+```sh
+py -m venv venv
+source venv/Scripts/activate
+```
+
+- Install dependencies:
+
+```sh
+pip install -r requirements.txt
+```
+
+- Try the Django local server:
+
+```sh
+py manage.py runserver
+```
+
+
+## API
+
+__Permissions__:
+
+1. To access to the endpoints, a superuser must be created
+
+```sh
+py manage.py createsuperuser
+```
+
+2. Create an admin user:
+```json
+POST - /api/user/create/
+
+{
+    "email": "",
+    "user_name": "",
+    "password": "",
+    "last_login": null,
+    "first_name": "",
+    "last_name": "",
+    "is_admin": true,
+    "is_active": true,
+    "is_staff": true
+}
+```
+
+3. This admin user will be able to create another users taking into account that *"is_active" = true* means that user has an admin role and *"is_active" = false* means the user has and service desk role (see "02_Use cases" document).
+
+
+__End-points__:
 
 Let's present the endpoints used to interact to the system and see its functionalities:
 
@@ -18,13 +70,15 @@ Let's present the endpoints used to interact to the system and see its functiona
 ```json
 POST - /api/user/create/
 {   
-    "first_name": "",
-    "last_name": "",
     "email": "",
     "user_name": "",
     "password": "",
-    "is_active": "",
-    "is_staff": ""
+    "last_login": null,
+    "first_name": "",
+    "last_name": "",
+    "is_admin": false,
+    "is_active": true,
+    "is_staff": true
 }
 ```
 - List  __users__:
@@ -234,4 +288,12 @@ Desk instance response:
         2
     ]
 }
+```
+
+__API Documentation__
+
+You can access to API documentation based on Swagger and coreapi at the link:
+
+```
+/docs/
 ```

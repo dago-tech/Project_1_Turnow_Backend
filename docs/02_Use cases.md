@@ -25,13 +25,20 @@ There are two types of application users
 ## User => Use cases
 
 __Administrator role__:
-  
+
+- Can create users, this new user can have an administrator role or a service desk role, also can modify any user's information. 
 - Can create categories for the different types of services provided and clients.
 - Can define the priority of clients (elderly, disability, etc., registered or unregistered clients)
-- Can configure the different service desk and assign them the different service categories with their respective service priorities.
-- Can add new attention modules
-- Can see daily, weekly and/or monthly statistics of the number of turns attended, categories of turns, waiting times, service priorities, service time in module, among others. The statistics are not in real time and are generated daily once the workday has ended. (Future feature)
+- Can configure the different service desks and assign them the different service categories with their respective service priorities.
+- Can add new service desks
+- Can see daily, weekly and/or monthly statistics of the number of turns attended, categories of turns, waiting times, service priorities, service time in service desk, among others. The statistics are not in real time and are generated daily once the workday has ended. (Future feature)
 
-__Module role__:
-  - The module user can see on a screen the current turn that must be attended in that service desk and mark it as attended once they have been attended.
-  - The module user can also reassign a turn to another service desk if necessary, for example if the service the user needs cannot be provided in that specific service desk.
+__Service desk role__:
+
+- The service desk user can see on a screen the first turn to serve and after attention he will mark it as served once he has done it.
+- The service desk user can also reassign a turn to another service desk if necessary, for example if the service the user needs cannot be provided in that specific service desk.(Future feature)
+
+
+### Use cases not supported
+
+- Service desk users cannot create new users, neither they can modify any user's information

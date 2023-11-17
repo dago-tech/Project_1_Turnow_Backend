@@ -155,3 +155,70 @@ git pull origin main --allow-unrelated-histories
 ```sh
 git push origin main
 ```
+
+
+## API Schema and documentation Generation
+
+Un Schema es metadata que detalla cómo la data está estructurada. Metadata = data about data.
+
+Para generar el Schema de nuestro proyecto, instalamos:
+
+```sh
+pip install PyYAML
+```
+
+- En nuestro archivo de urls.py general importamos:
+```sh
+from rest_framework.schemas import get_schema_view
+```
+
+- Y agregamos una ruta:
+
+```py
+path('schema', get_schema_view(
+        title="BlogAPI",
+        description="API for the BlogAPI",
+        version="1.0.0"
+    ), name='openapi-schema'),
+```
+
+Ademas, debemos instalar:
+
+```sh
+pip install uritemplate
+```
+- Ahora en la ruta /schema podemos visualizar el schema de nuestro proyecto.
+
+![Alt text](img/Schema1.jpg)
+
+
+### Doc Generator for Django Rest Framework
+
+- Django Rest Swagger
+- Swagger-ui
+- drf-yasg
+- Redoc
+
+En este caso vamos a generar nuestra documentacion en Swagger-ui, así que importamos lo siguiente en urls.py general:
+```py
+from rest_framework.documentation import include_docs_urls
+```
+
+Agregamos el path:
+
+```py
+path('docs/', include_docs_urls(title='BlogAPI')),
+```
+- Y también debemos instalar coreapi
+```sh
+pip install coreapi
+```
+'coreapi' es una herramienta versátil que se utiliza para interactuar con APIs web basadas en documentación interactiva, explorar rutas de API, realizar pruebas de API y generar documentación. En el contexto de Django, coreapi se usa como parte de Django REST framework para mejorar la documentación y la interacción con las APIs web creadas con esta biblioteca.
+
+- En el archivo settings.py agregamos:
+
+```py
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+```
+
+- Ahora tenemos con el link /docs la documentacion con la cual podemos interactuar con la API

@@ -222,3 +222,31 @@ REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoS
 ```
 
 - Ahora tenemos con el link /docs la documentacion con la cual podemos interactuar con la API
+
+
+## CORS
+
+- Instalamos la libreria django-cors-headers, esto permite solicitudes de navegador desde otros origenes.
+
+```sh
+pip install django-cors-headers
+```
+
+- En el archivo settings.py agregamos corsheaders a las INSTALLED APPS, agregamos el middleware y los origenes colocando la palabra localhost ya que cuando accedemos por el navegador a la app de react, este muestra localhost y no 127.0.0.1: 
+
+```py
+"corsheaders.middleware.CorsMiddleware",
+
+CORS_ALLOWED_ORIGINS = [
+    "https://example.com",
+    "https://sub.example.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:9000",
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:5173",
+]
+```
+
+- A este punto ya podemos visualizar los datos de la API en la aplicación de React.

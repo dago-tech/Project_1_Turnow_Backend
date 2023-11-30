@@ -9,7 +9,7 @@ class DeskListAPIView(generics.ListAPIView):
     """
     serializer_class = DeskSerializer
     queryset = Desk.objects.all()
-    permission_classes = [IsAdminUser]
+    #permission_classes = [IsAdminUser]
 
 
 class DeskRetrieveAPIView(generics.RetrieveAPIView):

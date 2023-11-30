@@ -1,4 +1,6 @@
+from rest_framework.response import Response
 from rest_framework import generics
+from rest_framework import status
 from .serializers import *
 
 
@@ -24,6 +26,19 @@ class ClientCreateAPIView(generics.CreateAPIView):
     """
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
+
+    def perform_create(self, serializer):
+        # If personal_id is not in request, none will be assigned, if we do not write 
+        # this line could be a "Not existing key" error
+        personal_id = self.request.data.get('personal_id', None)
+
+        # Verify if personal_id already exists in db
+        if Client.objects.filter(personal_id=personal_id).exists():
+            message = {'error': 'This person is already registered.'}
+            return Response(message, status=status.HTTP_201_CREATED)
+
+        # If do not exist, create a new CLient register
+        serializer.save()
 
 
 class ClientUpdateAPIView(generics.UpdateAPIView):

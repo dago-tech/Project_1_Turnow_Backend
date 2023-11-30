@@ -112,7 +112,7 @@ class First_to_serveAPIView(generics.UpdateAPIView):
         
         turn, desk_id = self.get_highest_priority_turn()
 
-        if turn:
+        if turn is not None:
             turn.desk = desk_id
             turn.state = 'first to serve'
             turn.save()
@@ -120,14 +120,14 @@ class First_to_serveAPIView(generics.UpdateAPIView):
             serializer = self.serializer_class(turn)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'There are no pending turns to serve'}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': 'There are no pending turns to serve'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ServingTurnAPIView(generics.UpdateAPIView):
     """
     When a person comes to the service desk, he will tell the user his turn number and the user
     should enter it to the system, it will be compared to the same turn number that was called 
-    by this desk. If they are equal turn.state will update to served and start_time will be 
+    by this desk. If they are equal turn.state will update to serving and start_time will be 
     set to now and waiting_time will be calculated. At that time the user must assist the client. 
     A body message should be sent with the turn_number in the HTTP request
     """
@@ -156,7 +156,7 @@ class ServingTurnAPIView(generics.UpdateAPIView):
             serializer = self.serializer_class(turn)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            return Response({'message': 'There are no turns assigned to this desk'}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'message': 'There are no turns assigned to this desk'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ServedTurnAPIView(generics.UpdateAPIView):

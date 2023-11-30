@@ -10,7 +10,7 @@ class Client(models.Model):
         ('cedula_extrangería', 'CE'),
     )
     id_type = models.CharField(choices=options, default='cedula')
-    personal_id = models.CharField(max_length=15, unique=True)
+    personal_id = models.CharField(max_length=30)
 
     def __str__(self):
         return self.personal_id

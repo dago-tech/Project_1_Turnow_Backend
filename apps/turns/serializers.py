@@ -7,3 +7,14 @@ class TurnSerializer(serializers.ModelSerializer):
     class Meta:
         model = Turn
         fields = '__all__'
+
+
+class TurnDeskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Turn
+        fields = ['id', 'turn_number', 'desk']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['desk'] = instance.desk.name
+        return representation

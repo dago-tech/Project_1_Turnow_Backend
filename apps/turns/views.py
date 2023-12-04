@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.views import APIView
 from .serializers import *
 from apps.desks.models import Desk
 
@@ -14,6 +14,27 @@ class TurnListAPIView(generics.ListAPIView):
     """
     serializer_class = TurnSerializer
     queryset = Turn.objects.all()
+
+
+class NotificationListView(generics.ListAPIView):
+    """
+    Filter Turn object by state 'first to serve'
+    """
+
+    serializer_class = TurnDeskSerializer
+
+    def get_queryset(self):
+        queryset = Turn.objects.filter(state='first to serve')
+        return queryset
+    # Override list method to customize answer when there is no objects in queryset
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        if not queryset.exists():
+            return Response({'message': 'There are no turns to serve'})
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TurnRetrieveAPIView(generics.RetrieveAPIView):
@@ -70,6 +91,45 @@ class TurnCreateAPIView(generics.CreateAPIView):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+class NewTurnsCheckerAPIView(APIView):
+    serializer_class = TurnSerializer
+
+    
+    def get(self, request, *args, **kwargs):
+        data = {
+            'state': False,
+            'message': ''
+        }
+
+        # Acceder al dato capturado de la URL
+        desk_id = kwargs['desk_id']
+        # Get the register of this desk_id
+        current_desk = get_object_or_404(Desk, pk=desk_id)
+
+        # Get categories related to this desk
+        desk_categories_list = list(current_desk.category.all())
+
+        categories = []
+        # Save in a list the categories related to this desk
+        for category in desk_categories_list:
+            categories.append(category.id)
+
+        # Get the first turn to be served
+        turn = Turn.objects.filter(state='pending', category__in=categories).order_by('-priority', 'created').first()
+        
+        if turn is not None:
+            data['state'] = True
+            data['message'] = 'There are new turns to serve'
+            return Response(data, status=status.HTTP_200_OK)
+        elif turn is None:
+            data['state'] = False
+            data['message'] = 'There are not new turns to serve'
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    
 
 class First_to_serveAPIView(generics.UpdateAPIView):
     """

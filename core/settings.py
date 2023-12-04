@@ -19,6 +19,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,7 +33,8 @@ INSTALLED_APPS = [
     'apps.priorities',
     'apps.categories',
     'apps.desks',
-    'apps.users'
+    'apps.users',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -136,4 +138,12 @@ CORS_ORIGIN_WHITELIST = [
 
 REST_FRAMEWORK = { 
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' 
+}
+
+ASGI_APPLICATION = "core.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }

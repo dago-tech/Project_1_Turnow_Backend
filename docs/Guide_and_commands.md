@@ -250,3 +250,8 @@ CORS_ORIGIN_WHITELIST = [
 ```
 
 - A este punto ya podemos visualizar los datos de la API en la aplicación de React.
+
+
+## JWT Authentication
+
+- A token blacklist is created to not allow a refresh token to be used again, when a logout is performed, the refresh token is sent to the blacklist

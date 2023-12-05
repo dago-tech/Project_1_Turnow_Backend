@@ -1,7 +1,7 @@
 # Turnow Project
 
 
-__Python version__, __Django version__, __JWT__, __PostgreSQL__
+__Python__, __Django__, __JWT__, __PostgreSQL__
 
 This is the backend section of Turnow Project. In docs folder you can find information about explanation, design and architecture.
 

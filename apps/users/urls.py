@@ -9,5 +9,5 @@ urlpatterns = [
     path('get/<int:pk>/', UserRetrieveAPIView.as_view(), name='user_retrieve'),
     path('update/<int:pk>/', UserUpdateAPIView.as_view(), name="user_update"),
     path('delete/<int:pk>/', UserDeleteAPIView.as_view(), name="user_delete"),
-    #path('logout/blacklist/', BlacklistTokenUpdateView.as_view(),name='blacklist')
+    path('logout/blacklist/', BlacklistTokenUpdateView.as_view(), name='blacklist')
 ]

@@ -1,7 +1,7 @@
 # Turnow Project
 
 
-__Python__, __Django__, __JWT__, __PostgreSQL__
+<img src="https://www.thetestspecimen.com/img/django-initial/django-rest-logo-960w.jpg" alt="django rest framework" width="130" height="60"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-plain-wordmark.svg" alt="postgresql" width="65" height="65"/>
 
 This is the backend section of Turnow Project. In docs folder you can find information about explanation, design and architecture.
 

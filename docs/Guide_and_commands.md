@@ -9,7 +9,7 @@ API built in Django Rest Framework to cover the backend of this project
 py -m venv venv
 source venv/Scripts/activate
 ```
-2. - Create requirements.txt
+2. Create requirements.txt
 ```sh
 pip freeze > requirements.txt
 ```
@@ -143,6 +143,7 @@ git remote -v
 - (origin es simplemente el nombre predeterminado que recibe el repositorio remoto principal contra el que trabajamos.)
 
 7. Hago git pull intentando traer lo del repo remoto, en este caso hay error porque los commits del repo local son diferentes a los del repo remoto:
+
 ```sh
 git pull origin main 
 (fatal: refusing to merge unrelated histories)

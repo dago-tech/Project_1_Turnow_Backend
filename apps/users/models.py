@@ -7,7 +7,10 @@ class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("You must provide an email address")
+        # Converting all characters to lowercase, removing extra spaces, or any other form 
+        # of regularization to ensure that email addresses are stored and compared consistently
         email = self.normalize_email(email)
+        # Create a new instance
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()

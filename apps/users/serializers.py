@@ -17,7 +17,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     # Override create method to hash the password
     def create(self, validated_data):
+        # Get and delete password from data, if it is not found password=None
         password = validated_data.pop('password', None)
+        # Creates a new instance with the rest of data
         user = self.Meta.model(**validated_data)
         if password is not None:
             user.set_password(password)

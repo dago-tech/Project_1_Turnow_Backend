@@ -63,6 +63,7 @@ class TurnCreateAPIView(generics.CreateAPIView):
             number = last_turn.turn_number[1:]
             # Increase the letter if necessary
             if letter < 'Z' and int(number)==999:
+                # Letter Increment based on Unicode value
                 new_turn_letter = chr(ord(letter) + 1)
             else:
                 new_turn_letter = letter
@@ -102,7 +103,7 @@ class NewTurnsCheckerAPIView(APIView):
             'message': ''
         }
 
-        # Acceder al dato capturado de la URL
+        # Get url parameter
         desk_id = kwargs['desk_id']
         # Get the register of this desk_id
         current_desk = get_object_or_404(Desk, pk=desk_id)
@@ -163,7 +164,6 @@ class First_to_serveAPIView(generics.UpdateAPIView):
 
         # Get the first turn to be served
         turn = Turn.objects.filter(state='pending', category__in=categories).order_by('-priority', 'created').first()
-
 
         return turn, current_desk
 
@@ -238,6 +238,7 @@ class ServedTurnAPIView(generics.UpdateAPIView):
         if turn:
             # Adjust times to project localtime, set turn.end_time and calculate turn.duration
             turn.end_time = timezone.localtime(timezone.now()).time()
+            # Change time format of start time with strptime in order to be able to be compared
             aux_start_time = datetime.strptime(str(turn.start_time), '%H:%M:%S.%f')
             aux_end_time = datetime.strptime(str(turn.end_time), '%H:%M:%S.%f')
             difference = aux_end_time - aux_start_time

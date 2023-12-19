@@ -23,7 +23,7 @@ Design a generic turn management application to ease and optimize the attention 
 ***
 ## Scope
 
-**Shift management**: The application must allow users to obtain a turn in person and also allow employees or managers of the organization to manage turns, modify them or cancel them if necessary.
+**Turn management**: The application must allow users to obtain a turn in person and also allow employees or managers of the organization to manage turns, modify them or cancel them if necessary.
 
 **Notifications**: The application must send notifications on a screen to clients.
 

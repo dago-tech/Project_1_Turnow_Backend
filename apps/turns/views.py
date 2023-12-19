@@ -199,9 +199,10 @@ class ServingTurnAPIView(generics.UpdateAPIView):
 
         turn_number_in_desk = request.data['turn_number']
 
-        desk_id = self.kwargs['desk_id']        
+        desk_id = self.kwargs['desk_id']
+        print(desk_id)       
         turn = Turn.objects.filter(state='first to serve', desk=desk_id).first()
-
+        print(turn)  
         if turn.turn_number == turn_number_in_desk:
             # Adjust times to project localtime and calculate the waiting_time
             turn.start_time = timezone.localtime(timezone.now()).time()

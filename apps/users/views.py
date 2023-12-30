@@ -19,16 +19,38 @@ class UserListAPIView(generics.ListAPIView):
 class IsAdminAPIView(APIView):
     serializer_class = CustomUser
 
+    
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs['user_id']
+        user = CustomUser.objects.filter(id=user_id).first()
+        response = {
+            'is_admin' : '',
+            'email' : '',
+        }
+
+        if user is not None:
+            response['is_admin'] = user.is_admin
+            response['email'] = user.email
+            
+            return Response(response, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class GetUserEmailAPIView(APIView):
+    serializer_class = CustomUser
+
     def get(self, request, *args, **kwargs):
         user_id = kwargs['user_id']
         user = CustomUser.objects.filter(id=user_id).first()
         
 
         if user is not None:
-            is_admin = user.is_admin
-            return Response(is_admin, status=status.HTTP_200_OK)
+            email = user.email
+            return Response(email, status=status.HTTP_200_OK)
         else:
             return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class UserCreateAPIView(generics.CreateAPIView):
     

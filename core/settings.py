@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'apps.categories',
     'apps.desks',
     'apps.users',
-    'channels'
+    'channels',
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -149,6 +150,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
+
 
 ASGI_APPLICATION = "core.asgi.application"
 

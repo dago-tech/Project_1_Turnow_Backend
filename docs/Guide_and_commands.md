@@ -256,3 +256,81 @@ CORS_ORIGIN_WHITELIST = [
 ## JWT Authentication
 
 - A token blacklist is created to not allow a refresh token to be used again, when a logout is performed, the refresh token is sent to the blacklist
+
+---
+
+## HTTPS y certificado SSL en local
+
+- Install chocolatey en powershell:
+
+```sh
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+
+
+__Step 1__ - Generating a local SSL certificate
+First, let's install mkcert on your machine. If you are running on macOS, you can use Homebrew package manager to do this. Run the following command in your terminal:
+
+```sh
+choco install mkcert
+```
+
+Next, let's make your Operational System trust the local certificates we're about to generate. You need to install a local certificate authority (CA) in the system trust store to do this. Run the following command:
+```sh
+mkcert -install
+```
+Next, you need to generate a certificate for the localhost domain.
+
+In the terminal, go to the root of your Django project. Then run the following terminal command to generate a certificate for localhost and 127.0.0.1:
+```sh
+mkcert localhost
+```
+
+- Instalar Nginx para Windows:
+
+Descarga la versión para Windows de Nginx desde nginx.org.
+Descomprime el archivo descargado en una ubicación de tu elección.
+
+- Colocar los dos archivos de certificados en la misma carpeta del nginx.conf
+
+- El nginx.conf establecerlo así:
+
+```sh
+events {
+    worker_connections 1024;  # Puedes ajustar este número según tus necesidades.
+}
+http {
+    server {
+        listen 443 ssl;
+        server_name localhost;
+
+        ssl_certificate localhost.pem;
+        ssl_certificate_key localhost-key.pem;
+
+        location / {
+            proxy_pass http://127.0.0.1:8000;  # El puerto donde Daphne está escuchando
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_redirect off;
+        }
+    }
+}
+```
+- Agregar nginx al PATH de las variables de entorno de windows colocando su ruta.
+- Ejecutar nginx.exe para que se inicie nginx en segundo plano
+```sh
+start nginx
+```
+```sh
+nginx -s stop
+```
+
+And that's it; you should now see the local development server running at the default https://localhost address.
+
+- Mientras el servidor de nginx esté corriendo la app de Django se va a poder correr con el servidor de desarrollo py manage.py runserver y la app va a estar accesible desde https://localhost.
+

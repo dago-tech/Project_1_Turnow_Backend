@@ -12,8 +12,8 @@ establish a communication with all consumers in order to automatically update
 first to serve turns table every time a service desk user call for a new turn to serve
 """
 
-class TurnWebSocket(WebsocketConsumer):
 
+class TurnWebSocket(WebsocketConsumer):
     def connect(self):
         async_to_sync(self.channel_layer.group_add)("turnow", self.channel_name)
         self.accept()
@@ -30,14 +30,15 @@ class TurnWebSocket(WebsocketConsumer):
     with an underscore. That is, the type turnow.message will execute the turnow_message method of 
     each consumer that receives it.
     """
+
     def receive(self, text_data):
-            async_to_sync(self.channel_layer.group_send)(
-                "turnow",
-                {
-                    "type": "turnow.message",
-                    "text": text_data,
-                },
-            )
+        async_to_sync(self.channel_layer.group_send)(
+            "turnow",
+            {
+                "type": "turnow.message",
+                "text": text_data,
+            },
+        )
 
     def turnow_message(self, event):
         self.send(text_data=event["text"])

@@ -5,5 +5,4 @@ from .models import *
 class PrioritySerializer(serializers.ModelSerializer):
     class Meta:
         model = Priority
-        fields = '__all__'
-
+        fields = "__all__"

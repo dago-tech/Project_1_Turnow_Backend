@@ -11,59 +11,60 @@ class UserListAPIView(generics.ListAPIView):
     """
     List of users using GET method
     """
+
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
-    #permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
 
 
 class IsAdminAPIView(APIView):
     serializer_class = CustomUser
 
-    
     def get(self, request, *args, **kwargs):
-        user_id = kwargs['user_id']
+        user_id = kwargs["user_id"]
         user = CustomUser.objects.filter(id=user_id).first()
         response = {
-            'is_admin' : '',
-            'email' : '',
+            "is_admin": "",
+            "email": "",
         }
 
         if user is not None:
-            response['is_admin'] = user.is_admin
-            response['email'] = user.email
-            
+            response["is_admin"] = user.is_admin
+            response["email"] = user.email
+
             return Response(response, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class GetUserEmailAPIView(APIView):
     serializer_class = CustomUser
 
     def get(self, request, *args, **kwargs):
-        user_id = kwargs['user_id']
+        user_id = kwargs["user_id"]
         user = CustomUser.objects.filter(id=user_id).first()
-        
 
         if user is not None:
             email = user.email
             return Response(email, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"message": "User not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class UserCreateAPIView(generics.CreateAPIView):
-    
     serializer_class = CustomUserSerializer
-    #permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
 
-    def post(self, request, format='json'):
+    def post(self, request, format="json"):
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status= status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class BlacklistTokenUpdateView(APIView):
@@ -84,24 +85,27 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
     """
     Retrieve a user using GET method
     """
+
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
-    #permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
     """
     Update a user using PUT method
     """
+
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
-    #permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
 
 
 class UserDeleteAPIView(generics.DestroyAPIView):
     """
     Delete a user using DELETE method
     """
+
     serializer_class = CustomUserSerializer
     queryset = CustomUser.objects.all()
-    #permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]

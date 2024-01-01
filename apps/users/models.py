@@ -1,13 +1,16 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 
 
 class CustomUserManager(BaseUserManager):
-
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("You must provide an email address")
-        # Converting all characters to lowercase, removing extra spaces, or any other form 
+        # Converting all characters to lowercase, removing extra spaces, or any other form
         # of regularization to ensure that email addresses are stored and compared consistently
         email = self.normalize_email(email)
         # Create a new instance
@@ -44,7 +47,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.user_name
-    
+
 
 """
 {

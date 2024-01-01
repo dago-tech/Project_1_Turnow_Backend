@@ -64,7 +64,7 @@
     | ...         | ...     | ...                                                           |
 
 
-6. __Tabla "Turn"__:  details of each turn requested by a client
+6. __"Turn" table__:  details of each turn requested by a client
 
     | Field           | Type    | Description                                           |
     |--------------   |---------|------------------------------------------------------ |
@@ -83,11 +83,18 @@
     | ...             | ...     | "canceled")                                           |
 
 
+7. __"TurnConfig" table__:  restart turn number configuration
+
+    | Field           | Type    | Description                                            |
+    |--------------   |---------|--------------------------------------------------------|
+    | id              | INT     | Unique and auto-generated register id                  |
+    | restart_turn    | BOOL    | Indicates if turn creation sequence will be initialized|
+
 ---
 
 (Optional)
 
-7. __"Permission" table__: Different permissions that users can have in the application => manage_users, create_turns, serve_turns 
+8. __"Permission" table__: Different permissions that users can have in the application => manage_users, create_turns, serve_turns 
 
     | Field        | Type        | Description                                   |
     |--------------|-------------|-----------------------------------------------|
@@ -98,7 +105,7 @@
 
 - DRF automatically makes the pivot tables in many-to-many relationships
 
-8. __"users_permissions" (pivot table)__ : many-to-many relationship between users and permissions, and stores the permissions assigned to each user
+9. __"users_permissions" (pivot table)__ : many-to-many relationship between users and permissions, and stores the permissions assigned to each user
 
     | Field         | Type | Description                                     |
     |-------------- |------|-----------------------------------------------  |

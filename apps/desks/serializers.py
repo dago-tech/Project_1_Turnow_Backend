@@ -5,5 +5,4 @@ from .models import *
 class DeskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Desk
-        fields = '__all__'
-
+        fields = "__all__"

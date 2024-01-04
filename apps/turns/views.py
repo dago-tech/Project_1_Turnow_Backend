@@ -250,10 +250,10 @@ class ServingTurnAPIView(generics.UpdateAPIView):
         turn_number_in_desk = request.data["turn_number"]
 
         desk_id = self.kwargs["desk_id"]
-        print(desk_id)
+
         turn = Turn.objects.filter(state="first to serve", desk=desk_id).first()
-        print(turn)
-        if turn.turn_number == turn_number_in_desk:
+
+        if (turn is not None) and (turn.turn_number == turn_number_in_desk):
             # Adjust times to project localtime and calculate the waiting_time
             turn.start_time = timezone.localtime(timezone.now()).time()
             created_time = timezone.localtime(turn.created).time()
@@ -267,7 +267,7 @@ class ServingTurnAPIView(generics.UpdateAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"message": "There are no turns assigned to this desk"},
+                {"message": "This turn number is not the first to serve for this service desk"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -304,8 +304,8 @@ class ServedTurnAPIView(generics.UpdateAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(
-                {"message": "There are no turns assigned to this desk"},
-                status=status.HTTP_204_NO_CONTENT,
+                {"message": "There are no turns being served"},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
 

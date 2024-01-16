@@ -109,9 +109,9 @@ py manage.py migrate
 ```
 
 __8.__ Correr el servidor de desarrollo:
-
+```sh
 py manage.py runserver
-
+```
 
 __9.__ Ya se pueden hacer solicitudes HTTP a este servidor, por ejemplo, usando:
 

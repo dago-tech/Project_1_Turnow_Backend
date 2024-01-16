@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from .serializers import *
 
 
@@ -29,6 +30,7 @@ class ClientCreateAPIView(generics.CreateAPIView):
 
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
+    # permission_classes = [AllowAny]
 
     def perform_create(self, serializer):
         # If personal_id is not in request, none will be assigned, if we do not write

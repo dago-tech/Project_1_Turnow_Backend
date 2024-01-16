@@ -1,74 +1,165 @@
-# Turnow Project
+# Turnow Project - Backend (Django rest framework - PostgreSQL)
 
 
 <img src="https://www.thetestspecimen.com/img/django-initial/django-rest-logo-960w.jpg" alt="django rest framework" width="130" height="60"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-plain-wordmark.svg" alt="postgresql" width="65" height="65"/>
 
-This is the backend section of Turnow Project. In docs folder you can find information about explanation, design and architecture.
 
-This API will allow you to interact with a generic turn management system, a person (client) approaches a computer, enters his personal id and other data about his necessity, receives a turn number, then he should wait for his turn to be shown in the notification screen, after that he will be able to be served in one the service desks by a person called 'user'.
+Esta es la sección de Backend del proyecto **"Turnow"**. Esta es una aplicación web que gestiona turnos en diferentes tipos de establecimientos donde haya turnos de espera. En el repositorio *Project_2_Turnow_Frontend* podrás encontrar la información de funcionamiento de la interfaz gráfica.
 
-## Commands
+- En la **carpeta "docs"** de este repositorio se encuentra la documentación del proyecto que incluye diseño, arquitectura, casos de uso, diagrama entidad-relación y tablas.
 
-- Create and build the virtual environment in bash console:
+---
+
+### Resumen de avance del proyecto
+
+El proyecto se encuentra en un 80% de avance.
+
+1. **Funcionalidad:** 90%
+   - La gran mayoría de características y funcionalidades principales se han implementado y probado. Pendiente mejorar seguridad del acceso a la base de datos Postgresql.
+
+2. **Pruebas:** Pendiente
+   - Los conjuntos de pruebas unitarias y los casos aún están por desarrollarse y ejecutarse. Garantizar pruebas sólidas es una prioridad para las próximas etapas.
+
+3. **Despliegue:** Pendiente
+   - Las tareas de implementación, incluida la configuración de servidores o plataformas de alojamiento, están pendientes. Esto es crucial para que el proyecto sea accesible para los usuarios. Se planea realizar en los servicios EC2 de AWS.
+
+
+
+A continuación la explicación de puesta en marcha del proyecto y endpoints:
+
+---
+
+
+## Descripción y puesta en marcha
+
+- Se crea API REST para servir la información de los distintos endpoints que permiten interactuar con la base de datos, estos permiten la gestion de Clientes, usuarios (trabajadores del establecimiento), prioridades, categorias, turnos y toda la lógica de negocio.
+
+- Se utiliza la librería SimpleJWT para gestionar la autenticación de usuarios usando JWT (JSON Web Token).
+
+- Se utiliza la librería Django Channels y el servidor Daphne para gestionar los WebSockets y poder actualizar la página de notificación de turnos, la cual debe recidir el otro navegador distinto de donde se hace el llamado de turnos.
+
+- Se utilizan peticiones HTTP y las respuestas son recibidas en formato JSON.
+
+
+__Versiones usadas en desarrollo__:
+
+- Sistema operativo local: Windows 10
+- Entorno de desarrollo: Visual Studio Code
+- Versión de Python: 3.11.1
+- Versión de djangorestframework: 3.14.0
+- Versión base de datos PostgreSQL: 14
+- Versión de Git: 2.39.1.windows.1
+
+
+__Documentación de API__:
+
+- Se utilizó Swagger para generar la documentación de la API Rest, esta permite interactuar con los endpoints y tener solicitudes y respuestas.
+
+- Modo dev: http://localhost:8000/docs/
+
+![Alt text](img/03_doc_project.jpg)
+
+---
+
+### Guía de descarga a local:
+
+
+__1.__ Abre la terminal o línea de comandos en el computador donde deseas descargar el proyecto.
+
+__2.__ Navega al directorio donde deseas almacenar el repositorio.
+
+__3.__ Ejecuta el siguiente comando de Git para clonar el repositorio a la carpeta actual:
 
 ```sh
+git clone https://github.com/dago-tech/Project_1_Turnow_Backend.git
+```
+
+__4.__ Muévete a la rama main:
+```sh
+git checkout main
+```
+
+__5.__ Crea y activa un entorno virtual en la carpeta del proyecto:
+```sh
 py -m venv venv
+```
+
+En powershell:
+```sh
+venv\Scripts\activate
+```
+En bash:
+```sh
 source venv/Scripts/activate
 ```
 
-- Install dependencies:
-
+__6.__ Instala todas las dependencias:
 ```sh
 pip install -r requirements.txt
 ```
 
-- Try the Django local server:
+__7.__ Debes tener PostgreSQL instalado y crear la base de datos con usuario y contraseña. Se deben ajustar los parámetros de la base de datos en el archivo settings.py
 
+![Alt text](img/01_conf_db_py.jpg)
+
+- Luego se deben hacer las migraciones a la base de datos, aquí se crean las tablas en ella:
 ```sh
-py manage.py runserver
+py manage.py makemigrations
+py manage.py migrate
 ```
 
+__8.__ Correr el servidor de desarrollo:
 
-## API
+py manage.py runserver
 
-__Permissions__:
 
-1. To access to the endpoints, a superuser must be created
+__9.__ Ya se pueden hacer solicitudes HTTP a este servidor, por ejemplo, usando:
+
+Método GET -->
+http://localhost:8000/api/users/
+
+
+- Visualización de solicitud brindada por la librería de Django Rest Framework:
+
+![GET_user](img/02_GET_1.jpg)
+
+---
+
+## Endpoints:
+
+__1.__ Se recomienda crear un ***superusuario*** que cuente con email y contraseña para gestionar la aplicación y acceder a los endpoints:
 
 ```sh
 py manage.py createsuperuser
 ```
 
-2. Create an admin user:
+
+__2.__ En primer lugar, el administrador debe realizar la configuración inicial y establecer usuarios, categorías, prioridades y service desks:
+
+- Crear un usuario administrador:
+
 ```json
-POST - /api/user/create/
+POST --> http://localhost:8000/api/user/create/
 
 {
-    "email": "",
-    "user_name": "",
+    "email": "a@a.com",
+    "user_name": "Daniel",
     "password": "",
     "last_login": null,
-    "first_name": "",
-    "last_name": "",
+    "first_name": "Daniel",
+    "last_name": "Gutierrez",
     "is_admin": true,
     "is_active": true,
     "is_staff": true
 }
 ```
 
-3. This admin user will be able to create another users taking into account that *"is_active" = true* means that user has an admin role and *"is_active" = false* means the user has and service desk role (see "02_Use cases" document).
+- Este usuario administrador podrá crear otros usuarios teniendo en cuenta que *"is_admin" = true* significa que el usuario tiene un rol de administrador y *"is_admin" = false* significa que el usuario tiene un rol de Service desk (ver documento "02_Use cases").
 
-
-__End-points__:
-
-Let's present the endpoints used to interact to the system and see its functionalities:
-
-1. First of all, admin should do the initial set up and establish users, categories, priorities and service desks:
-
-- Create a __user__:
+- Crear un __usuario__:
 
 ```json
-POST - /api/user/create/
+POST --> http://localhost:8000/api/user/create/
 {   
     "email": "",
     "user_name": "",
@@ -81,38 +172,41 @@ POST - /api/user/create/
     "is_staff": true
 }
 ```
-- List  __users__:
+- Listar  __usuario__:
 
 ```json
-GET - /api/user/
+GET --> http://localhost:8000/api/user/
 ```
 
-- Update a __user__:
+- Actualizar __usuario__:
 
 ```json
-PUT-PATCH - /api/user/update/id/
+PUT-PATCH --> http://localhost:8000/api/user/update/id/
 ```
 
-- Delete a __user__:
+- Eliminar a __usuario__:
 
 ```json
-DELETE - /api/user/delete/id/
+DELETE --> http://localhost:8000/api/user/delete/id/
 ```
 
-- Create a __category__:
+
+__3.__ Aquí se muestran los distintos endpoint para crear instancias:
+
+- Crear una __categoría__:
 
 ```json
-POST - /api/category/create/
+POST - http://localhost:8000/api/category/create/
 {   
     "name": "",
     "description": ""
 }
 ```
 
-- Create a __priority__, priority must be a number between 0 and 20(highest priority):
+- Crear una __prioridad__, la prioridad debe ser un número entre 0 y 20 (mayor número - mayor prioridad):
 
 ```json
-POST - /api/priority/create/
+POST --> http://localhost:8000/api/priority/create/
 {   
     "name": "",
     "description": "",
@@ -120,10 +214,10 @@ POST - /api/priority/create/
 }
 ```
 
-- Create a __service_desk__:
+- Crear un __service_desk__:
 
 ```json
-POST - /api/desk/create/
+POST --> http://localhost:8000/api/desk/create/
 {   
     "name": "",
     "user": "",
@@ -133,22 +227,23 @@ POST - /api/desk/create/
 }
 ```
 
-2. When a client arrives at the establishment, he will enter some data to the system and a client and a turn register will be created in the database. Turn will be created with field "state" equals to "pending":
 
-- Create a __client__:
+__4.__ Cuando un cliente llega al establecimiento ingresará su ID, categoría y prioridad al sistema y se creará un cliente y un registro de turnos en la base de datos. El turno se creará con el campo "state" igual a "pending" ("pendiente, en espera"):
+
+- Crear un __cliente__:
 
 ```json
-POST - /api/client/create/
+POST --> http://localhost:8000/api/client/create/
 {   
     "id_type": "",
     "personal_id": ""    
 }
 ```
 
-- Create a __turn__:
+- Crear un __turno__:
 
 ```json
-POST - /api/turn/create/
+POST --> http://localhost:8000/api/turn/create/
 {   
     "personal_id": "",
     "category": "",
@@ -156,10 +251,10 @@ POST - /api/turn/create/
 }
 ```
 
-- Retrieve a __turn__:
+- Obtener un __turno__:
 
 ```json
-GET - /api/turn/id/
+GET --> http://localhost:8000/api/turn/id/
 
 response:
 {
@@ -178,15 +273,20 @@ response:
 }
 ```
 
-- List of __turns__:
+- Lista de __turnos__:
 
 ```json
-GET - /api/turn/
+GET --> http://localhost:8000//api/turn/
 ```
 
-3. After a waiting time, one or more service desk will request to serve a client, client's turn will be choose based on priority, category and turn creation time. Turn.state will be updated to "first to serve":
+![Alt text](img/04_turn_list.jpg)
+
+
+
+__5.__ Después de un tiempo de espera, una o más Service desk solicitarán atender a un cliente, el turno del cliente se elegirá según la prioridad, la categoría y el tiempo de creación. Cuando suceda esto Turn.state se actualizará a "first to serve" ("primero en atender"). Tambien Turn.desk se actualizará al módulo de atención (Service desk) del que fue llamado:
+
 ```json
-PUT - api/turn/serve/<int:desk_id>/
+PUT --> http://localhost:8000/api/turn/serve/<int:desk_id>/
 
 Turn instance response:
 {
@@ -206,13 +306,16 @@ Turn instance response:
 
 ```
 
-4. Client will come to service desk, then user will check the turn number typing it into the system, if it is correct Turn instance will be updated and user will be able to serve the client. Turn.state will be updated to "serving":
+
+__6.__ El cliente acudirá al service desk, luego el usuario verificará el número de turno escribiéndolo en el sistema; si es correcto, la instancia de turno se actualizará y el usuario podrá atender al cliente. Turn.state se actualizará a "serving" ("atendiendo"):
+
 
 ```json
-PUT - api/turn/serving/<int:desk_id>/
+PUT --> http://localhost:8000/api/turn/serving/<int:desk_id>/
 {   
     "turn_number": "A001",  
 }
+
 Turn instance response:
 {
     "id": 4,
@@ -229,9 +332,12 @@ Turn instance response:
     "desk": 1
 }
 ```
-- Also desk state is updated:
+
+- También el estado del service desk es actualizado con:
+
 ```json
-PATCH - api/desk/update/<int:desk_id>/
+PATCH --> http://localhost:8000/api/desk/update/<int:desk_id>/
+
 {   
     "busy": true,  
 }
@@ -249,10 +355,11 @@ Desk instance response:
 }
 ```
 
-5. When user finishes to serve the client, turn and desk registers should be updated:
+
+__7.__ Cuando el usuario termina de atender al cliente, se deben actualizar los registros de turnos y service desks. Turn.state se actualizará a "served" ("atendido"):
 
 ```json
-PUT - api/turn/served/<int:desk_id>/
+PUT --> http://localhost:8000/api/turn/served/<int:desk_id>/
 
 Turn instance response:
 {
@@ -272,10 +379,11 @@ Turn instance response:
 ```
 
 ```json
-PATCH - api/desk/update/<int:desk_id>/
+PATCH --> http://localhost:8000/api/desk/update/<int:desk_id>/
 {   
     "busy": false,  
 }
+
 Desk instance response:
 {
     "id": 1,
@@ -290,10 +398,11 @@ Desk instance response:
 }
 ```
 
-__API Documentation__
 
-You can access to API documentation based on Swagger and coreapi at the link:
+__8.__ A este punto, el usuario en el service desk podrá llamar a un nuevo turno y el proceso se repetirá nuevamente.
 
-```
-/docs/
-```
+
+
+## Futuras versiones
+
+- La aplicación actualmente guarda los tiempos de creación, espera para ser atendido y tiempo de atención de cada turno, esto lo hace en la tabla de Turnos de la base de datos. Estos datos serán usados para que los usuarios administradores de la aplicación puedan ver estadisticas y gráficos que le permitan sacar conclusiones sobre usuarios o puntos de atención con mayor o menor eficiencia, entre otros.

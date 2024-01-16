@@ -276,7 +276,7 @@ response:
 - Lista de __turnos__:
 
 ```json
-GET --> http://localhost:8000//api/turn/
+GET --> http://localhost:8000/api/turn/
 ```
 
 ![Alt text](img/04_turn_list.jpg)

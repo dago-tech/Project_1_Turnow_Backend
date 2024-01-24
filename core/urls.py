@@ -16,6 +16,7 @@ urlpatterns = [
     path("api/category/", include("apps.categories.urls", namespace="category_api")),
     path("api/priority/", include("apps.priorities.urls", namespace="priority_api")),
     path("api/desk/", include("apps.desks.urls", namespace="desk_api")),
+    path("api/stats/", include("apps.stats.urls", namespace="stats_api")),
     path("docs/", include_docs_urls(title="Turnow")),
     path(
         "schema",
